@@ -247,10 +247,13 @@ export default function Home() {
         buffer = lines.pop() || "";
 
         for (const line of lines) {
-          const trimmed = line.trim();
-          if (trimmed.startsWith("data:")) {
-            const data = trimmed.slice(5).trimStart();
-            if (data && data !== "[DONE]") {
+          let rawLine = line;
+          if (rawLine.endsWith("\r")) {
+            rawLine = rawLine.slice(0, -1);
+          }
+          if (rawLine.startsWith("data:")) {
+            const data = rawLine.startsWith("data: ") ? rawLine.slice(6) : rawLine.slice(5);
+            if (data !== "[DONE]") {
               setOutput((prev) => prev + data);
             }
           }
@@ -258,9 +261,13 @@ export default function Home() {
       }
 
       // Process any remaining buffer
-      if (buffer.trim().startsWith("data:")) {
-        const data = buffer.trim().slice(5).trimStart();
-        if (data && data !== "[DONE]") {
+      let rawBuffer = buffer;
+      if (rawBuffer.endsWith("\r")) {
+        rawBuffer = rawBuffer.slice(0, -1);
+      }
+      if (rawBuffer.startsWith("data:")) {
+        const data = rawBuffer.startsWith("data: ") ? rawBuffer.slice(6) : rawBuffer.slice(5);
+        if (data !== "[DONE]") {
           setOutput((prev) => prev + data);
         }
       }
