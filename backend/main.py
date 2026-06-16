@@ -56,9 +56,18 @@ async def lifespan(app: FastAPI):
     """Initialize heavy resources once at startup, clean up on shutdown."""
     global embeddings, qdrant_client, vector_store
 
+    # Startup Diagnostics
+    hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    logger.info("--- Enterprise RAG Startup Diagnostics ---")
+    logger.info(f"GROQ_API_KEY: {'Configured' if GROQ_API_KEY else 'MISSING'}")
+    logger.info(f"QDRANT_URL: {QDRANT_URL}")
+    logger.info(f"QDRANT_API_KEY: {'Configured' if QDRANT_API_KEY else 'MISSING'}")
+    logger.info(f"HF_TOKEN: {'Configured' if hf_token else 'MISSING'}")
+    logger.info(f"ALLOWED_ORIGINS: {ALLOWED_ORIGINS}")
+    logger.info("------------------------------------------")
+
     # 1. Load embedding model
     logger.info("Loading embedding model: all-MiniLM-L6-v2 via Hugging Face Inference API ...")
-    hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN")
     embeddings = HuggingFaceEndpointEmbeddings(
         model="sentence-transformers/all-MiniLM-L6-v2",
         task="feature-extraction",
