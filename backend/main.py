@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
 from langchain_groq import ChatGroq
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -42,7 +42,7 @@ EMBEDDING_DIM = 384
 # Global State (initialized in lifespan)
 # ──────────────────────────────────────────────────────────
 
-embeddings: HuggingFaceEmbeddings = None  # type: ignore
+embeddings: HuggingFaceEndpointEmbeddings = None  # type: ignore
 qdrant_client: QdrantClient = None  # type: ignore
 vector_store: QdrantVectorStore = None  # type: ignore
 
@@ -57,9 +57,14 @@ async def lifespan(app: FastAPI):
     global embeddings, qdrant_client, vector_store
 
     # 1. Load embedding model
-    logger.info("Loading embedding model: all-MiniLM-L6-v2 ...")
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    logger.success("Embedding model loaded.")
+    logger.info("Loading embedding model: all-MiniLM-L6-v2 via Hugging Face Inference API ...")
+    hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    embeddings = HuggingFaceEndpointEmbeddings(
+        model="sentence-transformers/all-MiniLM-L6-v2",
+        task="feature-extraction",
+        huggingfacehub_api_token=hf_token,
+    )
+    logger.success("Embedding model client initialized.")
 
     # 2. Connect to Qdrant
     logger.info(f"Connecting to Qdrant at {QDRANT_URL} ...")

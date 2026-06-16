@@ -6,7 +6,6 @@ langchain-groq
 langchain-qdrant
 langchain-huggingface
 langchain-text-splitters
-sentence-transformers
 qdrant-client
 pydantic
 python-multipart
