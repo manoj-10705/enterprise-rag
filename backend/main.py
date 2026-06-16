@@ -30,10 +30,22 @@ from qdrant_client.models import Distance, VectorParams
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if GROQ_API_KEY:
+    GROQ_API_KEY = GROQ_API_KEY.strip()
+
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
+if QDRANT_URL:
+    QDRANT_URL = QDRANT_URL.strip()
+
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", None)
+if QDRANT_API_KEY:
+    QDRANT_API_KEY = QDRANT_API_KEY.strip()
+
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "compliance_documents")
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+if COLLECTION_NAME:
+    COLLECTION_NAME = COLLECTION_NAME.strip()
+
+ALLOWED_ORIGINS = [origin.strip() for origin in os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",") if origin.strip()]
 
 # Embedding model dimension (all-MiniLM-L6-v2 produces 384-dim vectors)
 EMBEDDING_DIM = 384
@@ -58,6 +70,8 @@ async def lifespan(app: FastAPI):
 
     # Startup Diagnostics
     hf_token = os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    if hf_token:
+        hf_token = hf_token.strip()
     logger.info("--- Enterprise RAG Startup Diagnostics ---")
     logger.info(f"GROQ_API_KEY: {'Configured' if GROQ_API_KEY else 'MISSING'}")
     logger.info(f"QDRANT_URL: {QDRANT_URL}")
