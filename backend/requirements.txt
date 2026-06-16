@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sse-starlette
+langchain
+langchain-groq
+langchain-qdrant
+langchain-huggingface
+langchain-text-splitters
+sentence-transformers
+qdrant-client
+pydantic
+python-multipart
+python-dotenv
+loguru

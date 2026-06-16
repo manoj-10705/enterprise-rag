@@ -1,0 +1,42 @@
+# ─── Root ───
+.env
+.env.local
+.env.production
+*.env
+
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ─── Node ───
+node_modules/
+.next/
+out/
+.turbo/
+
+# ─── IDE ───
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── OS ───
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Docker ───
+docker-compose.override.yml
+
+# ─── Qdrant local storage ───
+qdrant_data/
